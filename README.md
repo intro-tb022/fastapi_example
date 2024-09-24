@@ -17,8 +17,24 @@ Setup con db connection a SQLite de un modelo de Alumno.
 
 `sql-model-with-relations`
 
+
 Setup con db connection a SQLite con modelos de Alumno y Grupo para representar relaciones 1:N
 
 `sql-model-with-relations-advanced`
 
 Setup con db connection a SQLite con modelos de Alumo, Grupo, Curso, Materia para representar relaciones N:M
+
+
+## Setup
+El entorno virtual y las dependencias son manejadas usando [uv](https://docs.astral.sh/uv/)
+
+1. Instalar dependencias
+```
+uv sync
+```
+
+## Correr servidor
+```
+uv run fastapi dev main.py
+```
+>>>>>>> e8cef15 (Basic structure)
