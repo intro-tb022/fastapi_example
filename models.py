@@ -1,23 +1,18 @@
+from typing import List
+
 from pydantic import BaseModel
+from sqlmodel import Field, SQLModel
 
-class Alumno(BaseModel):
-    padron: int
+class AlumnoBase(SQLModel):
     nombre: str
     apellido: str
-    edad: int | None = None
+    edad: int | None = Field(default=None, ge=17)
 
-class AlumnoCreate(BaseModel):
-    nombre: str
-    apellido: str
-    edad: int | None = None
+class Alumno(AlumnoBase, table=True):
+   padron: int = Field(primary_key=True)
 
+class AlumnoCreate(AlumnoBase):
+    pass
 
 class Error(BaseModel):
     detail: str
-
-
-alumnos: list[Alumno] = [
-    Alumno(padron=94557, nombre="Federico", apellido="Esteban"),
-    Alumno(padron=95557, nombre="Daniela", apellido="Riesgo"),
-    Alumno(padron=98713, nombre="Juan Ignacio", apellido="Kristal")
-]
