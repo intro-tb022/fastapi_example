@@ -1,9 +1,9 @@
-from models import Alumno, AlumnoCreate, Error
 from fastapi import APIRouter, HTTPException, status
 from sqlmodel import select
 
-from models import Alumno, AlumnoCreate, Error
+from models import Alumno, AlumnoCreate, AlumnoPublic, Error
 from database import SessionDep
+from routes.grupos import grupos
 
 router = APIRouter()
 
@@ -15,12 +15,16 @@ def list(session: SessionDep) -> list[Alumno]:
     return alumnos
 
 @router.get("/{padron}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
-def show(session: SessionDep, padron: int) -> Alumno:
+def show(session: SessionDep, padron: int) -> AlumnoPublic:
     return buscar_alumno(session, padron)
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def create(session: SessionDep, alumno_a_crear: AlumnoCreate) -> Alumno:
-    alumno = Alumno(**alumno_a_crear.model_dump())
+    alumno = Alumno(
+        nombre=alumno_a_crear.nombre,
+        apellido=alumno_a_crear.apellido,
+        edad=alumno_a_crear.edad,
+    )
     session.add(alumno)
     session.commit()
     session.refresh(alumno)
@@ -50,9 +54,19 @@ def cargar_nota(padron: int, nota: int) -> Alumno:
     alumno.notas.append(nota)
     return alumno
 
+@router.post("/{padron}/asignar_grupo")
+def asignar_grupo(session: SessionDep, padron: int, grupo_id: int) -> Alumno:
+    alumno = buscar_alumno(session, padron)
+    grupo = grupos.buscar_grupo(session, grupo_id)
+
+    alumno.grupo = grupo
+    session.commit()
+    session.refresh(alumno)
+    return alumno
+
 
 def buscar_alumno(session: SessionDep, padron: int) -> Alumno:
-    alumno = session.exec(select(Alumno).where(Alumno.padron == padron)).one()
+    alumno = session.exec(select(Alumno).where(Alumno.padron == padron)).first()
 
     if alumno:
         return alumno
