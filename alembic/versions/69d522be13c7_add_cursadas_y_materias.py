@@ -26,7 +26,6 @@ def upgrade() -> None:
     )
     op.create_table(
         'cursada',
-        sa.Column('año', sa.Integer, nullable=False),
         sa.Column('materia_id', sa.Integer, primary_key=True),
         sa.Column('alumno_padron', sa.Integer, primary_key=True),
         sa.ForeignKeyConstraint(
