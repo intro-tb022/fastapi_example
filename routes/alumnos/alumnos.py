@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException, status
 from sqlmodel import select
 
-from models import Alumno, AlumnoCreate, AlumnoPublic, Error
+from models.alumno import Alumno, AlumnoCreate
+from models.error import Error
+from models.public import AlumnoPublic, AlumnoPublicWithGroup
 from database import SessionDep
 from routes.grupos import grupos
 
@@ -15,7 +17,7 @@ def list(session: SessionDep) -> list[Alumno]:
     return alumnos
 
 @router.get("/{padron}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
-def show(session: SessionDep, padron: int) -> AlumnoPublic:
+def show(session: SessionDep, padron: int) -> AlumnoPublicWithGroup:
     return buscar_alumno(session, padron)
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
@@ -31,7 +33,7 @@ def create(session: SessionDep, alumno_a_crear: AlumnoCreate) -> Alumno:
     return alumno
 
 @router.put("/{padron}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
-def update(session: SessionDep, padron: int, alumno_actualizado: Alumno) -> Alumno:
+def update(session: SessionDep, padron: int, alumno_actualizado: Alumno) -> AlumnoPublic:
     alumno = buscar_alumno(session, padron)
     alumno.nombre = alumno_actualizado.nombre
     alumno.apellido = alumno_actualizado.apellido
@@ -42,20 +44,20 @@ def update(session: SessionDep, padron: int, alumno_actualizado: Alumno) -> Alum
     return alumno
 
 @router.delete("/{padron}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
-def delete(session: SessionDep, padron: int) -> Alumno:
+def delete(session: SessionDep, padron: int) -> AlumnoPublic:
     alumno = buscar_alumno(session, padron)
     session.delete(alumno)
     session.commit()
     return alumno
 
 @router.put("/{padron}/cargar_nota")
-def cargar_nota(padron: int, nota: int) -> Alumno:
+def cargar_nota(padron: int, nota: int) -> AlumnoPublic:
     alumno = buscar_alumno(padron)
     alumno.notas.append(nota)
     return alumno
 
 @router.post("/{padron}/asignar_grupo")
-def asignar_grupo(session: SessionDep, padron: int, grupo_id: int) -> Alumno:
+def asignar_grupo(session: SessionDep, padron: int, grupo_id: int) -> AlumnoPublicWithGroup:
     alumno = buscar_alumno(session, padron)
     grupo = grupos.buscar_grupo(session, grupo_id)
 
@@ -65,7 +67,7 @@ def asignar_grupo(session: SessionDep, padron: int, grupo_id: int) -> Alumno:
     return alumno
 
 
-def buscar_alumno(session: SessionDep, padron: int) -> Alumno:
+def buscar_alumno(session: SessionDep, padron: int) -> AlumnoPublic:
     alumno = session.exec(select(Alumno).where(Alumno.padron == padron)).first()
 
     if alumno:

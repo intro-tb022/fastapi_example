@@ -2,7 +2,9 @@ from fastapi import APIRouter, HTTPException, status
 from sqlmodel import select
 
 from database import SessionDep
-from models import Grupo, GrupoPublic, Error
+from models.grupo import Grupo
+from models.public import GrupoPublic, GrupoPublicWithAlumnos
+from models.error import Error
 
 router = APIRouter()
 
@@ -14,17 +16,18 @@ def list(session: SessionDep) -> list[Grupo]:
     return grupos
 
 @router.get("/{grupo_id}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
-def show(session: SessionDep, grupo_id: int) -> GrupoPublic:
+def show(session: SessionDep, grupo_id: int) -> GrupoPublicWithAlumnos:
     return buscar_grupo(session, grupo_id)
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def create(session: SessionDep, grupo: Grupo) -> Grupo:
+def create(session: SessionDep, grupo: Grupo) -> GrupoPublic:
     session.add(grupo)
     session.commit()
     session.refresh(grupo)
     return grupo
 
-def buscar_grupo(session: SessionDep, grupo_id: int) -> Grupo:
+
+def buscar_grupo(session: SessionDep, grupo_id: int) -> GrupoPublic:
     query = select(Grupo).where(Grupo.id == grupo_id)
     grupo = session.exec(query).first()
 
