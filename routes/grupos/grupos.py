@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 @router.get("/")
-def list(session: SessionDep) -> list[Grupo]:
+def list(session: SessionDep) -> list[GrupoPublic]:
     query = select(Grupo)
     grupos = session.exec(query)
     return grupos

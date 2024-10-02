@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-from fastapi import APIRouter, HTTPException, status
-=======
 from fastapi import APIRouter, status
->>>>>>> 92499d8 (Add routes and public models)
 from sqlmodel import select
 
 from models.alumno import Alumno, AlumnoCreate
@@ -16,7 +12,7 @@ router = APIRouter()
 
 
 @router.get("/")
-def list(session: SessionDep) -> list[Alumno]:
+def list(session: SessionDep) -> list[AlumnoPublic]:
     query = select(Alumno)
     alumnos = session.exec(query)
     return alumnos
@@ -26,7 +22,7 @@ def show(session: SessionDep, padron: int) -> AlumnoPublicWithRelations:
     return utils.buscar_alumno(session, padron)
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-def create(session: SessionDep, alumno_a_crear: AlumnoCreate) -> Alumno:
+def create(session: SessionDep, alumno_a_crear: AlumnoCreate) -> AlumnoPublic:
     alumno = Alumno(
         nombre=alumno_a_crear.nombre,
         apellido=alumno_a_crear.apellido,
@@ -38,7 +34,7 @@ def create(session: SessionDep, alumno_a_crear: AlumnoCreate) -> Alumno:
     return alumno
 
 @router.put("/{padron}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
-def update(session: SessionDep, padron: int, alumno_actualizado: Alumno) -> AlumnoPublic:
+def update(session: SessionDep, padron: int, alumno_actualizado: AlumnoPublic) -> AlumnoPublic:
     alumno = utils.buscar_alumno(session, padron)
     alumno.nombre = alumno_actualizado.nombre
     alumno.apellido = alumno_actualizado.apellido
