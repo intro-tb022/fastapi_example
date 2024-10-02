@@ -17,4 +17,8 @@ Setup con db connection a SQLite de un modelo de Alumno.
 
 `sql-model-with-relations`
 
-Setup con db connection a SQLite con modelos de Alumno, GrupoTp, Materia y Curso.
+Setup con db connection a SQLite con modelos de Alumno y Grupo para representar relaciones 1:N
+
+`sql-model-with-relations-advanced`
+
+Setup con db connection a SQLite con modelos de Alumo, Grupo, Curso, Materia para representar relaciones N:M
