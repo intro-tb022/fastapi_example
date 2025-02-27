@@ -1,4 +1,4 @@
-from routes.main import api_router
+from src.routes.routes import api_router
 
 from fastapi import FastAPI
 
