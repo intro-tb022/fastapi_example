@@ -4,14 +4,10 @@ from fastapi import HTTPException, status
 
 class Repository:
     def __init__(self):
-        self.alumnos = self.cargar_alumnos()
+        self.alumnos = []
 
-    def cargar_alumnos(self):
-        return [
-            Alumno(padron=94557, nombre="Federico", apellido="Esteban", edad=32),
-            Alumno(padron=95557, nombre="Daniela", apellido="Riesgo", edad=30),
-            Alumno(padron=98713, nombre="Juan Ignacio", apellido="Kristal", edad=27)
-        ]
+    def cargar_alumnos(self, alumnos):
+        self.alumnos = alumnos
     
     def list(self) -> list[Alumno]:
         return self.alumnos
@@ -49,5 +45,3 @@ class Repository:
         alumno = self.find(padron)
         alumno.notas.append(nota)
         return alumno
-    
-repository = Repository()
