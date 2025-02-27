@@ -2,7 +2,7 @@ from src.models import Alumno, AlumnoUpsert
 
 from fastapi import HTTPException, status
 
-class Repository:
+class Database:
     def __init__(self):
         self.alumnos = []
 

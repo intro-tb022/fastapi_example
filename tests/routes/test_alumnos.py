@@ -4,13 +4,13 @@ from fastapi.testclient import TestClient
 
 from src.main import app
 from src.models import Alumno
-from src.repository.repository import Repository
-from src.dependencies import get_repository
+from database.database import Database
+from src.dependencies import get_database
 
 client = TestClient(app)
 
-mock_repo = MagicMock(Repository)
-app.dependency_overrides[get_repository] = lambda: mock_repo
+mock_repo = MagicMock(Database)
+app.dependency_overrides[get_database] = lambda: mock_repo
 
 def test_get_alumnos():
     mock_repo.list.return_value = [

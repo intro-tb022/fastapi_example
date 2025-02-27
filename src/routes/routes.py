@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.repository.repository import Repository
+from database.database import Database
 from src.routes import alumnos
 
 api_router = APIRouter()
