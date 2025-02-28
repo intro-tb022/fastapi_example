@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends
-from database.database import Database
+from src.database.database import Database
 
 __database_instance = None
 

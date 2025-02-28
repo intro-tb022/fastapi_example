@@ -6,7 +6,7 @@ class Database:
     def __init__(self):
         self.alumnos = []
 
-    def cargar_alumnos(self, alumnos):
+    def cargar_alumnos(self, alumnos: list[Alumno]):
         self.alumnos = alumnos
     
     def list(self) -> list[Alumno]:
