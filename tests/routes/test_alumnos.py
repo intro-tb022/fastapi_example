@@ -3,9 +3,9 @@ from fastapi import Depends
 from fastapi.testclient import TestClient
 
 from src.main import app
-from src.models import Alumno
+from src.models.alumno import Alumno
 from src.database.database import Database
-from src.dependencies import get_database
+from src.dependencies.database import get_database
 
 client = TestClient(app)
 

@@ -4,13 +4,13 @@ import random
 
 from fastapi import Path
 
-from src.dependencies import get_database
-from src.models import Alumno
+from dependencies.database import get_database
+from models.alumno import Alumno
 
-src_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 def seed():
-    cargar_alumnos(os.path.join(src_root, "resources", "alumnos.csv"))
+    cargar_alumnos(os.path.join(root, "resources", "alumnos.csv"))
 
 def cargar_alumnos(path):
     alumnos = []

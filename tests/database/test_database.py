@@ -1,5 +1,5 @@
 import pytest
-from src.models import Alumno, AlumnoUpsert
+from models.alumno import Alumno, AlumnoUpsert
 from src.database.database import Database
 
 juan = Alumno(padron=1, nombre= "Juan", apellido= "Perez", edad= 20)
