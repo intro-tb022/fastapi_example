@@ -1,4 +1,6 @@
+alembic
 fastapi[standard]
+sqlmodel
 pytest
 pytest-cov
 pytest-mock
