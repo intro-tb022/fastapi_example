@@ -15,4 +15,4 @@ def get_database() -> Database:
         raise RuntimeError("Repository instance not initialized.")
     return __database_instance
 
-RepositoryDep = Annotated[Database, Depends(get_database)]
+DatabaseDep = Annotated[Database, Depends(get_database)]
