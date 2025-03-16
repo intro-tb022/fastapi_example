@@ -1,48 +1,58 @@
 from fastapi import HTTPException, status
-from sqlmodel import select
+from sqlmodel import Session, select
 
-from src.dependencies.sqlmodel import SessionDep
 from src.models.alumno import Alumno, AlumnoUpsert
 
 class Database:
-    def __init__(self):
-        self.alumnos = []
+    def __init__(self, engine):
+        self.engine = engine
+
+    def session(self):
+        with Session(self.engine) as session:
+            return session
 
     def cargar_alumnos(self, alumnos: list[Alumno]):
-        pass
-    
-    def list(self, session: SessionDep) -> list[Alumno]:
-        query = select(Alumno)
-        alumnos = session.exec(query)
-        return alumnos
-    
-    def add(self, session: SessionDep, alumno_a_crear: AlumnoUpsert) -> Alumno:
-        alumno = Alumno(**alumno_a_crear.model_dump())
-        session.add(alumno)
+        session = self.session()
+        session.add_all(alumnos)
         session.commit()
-        session.refresh(alumno)
-        return alumno
-
-    def find(self, session: SessionDep, padron) -> Alumno:
-        alumno = session.exec(select(Alumno).where(Alumno.padron == padron)).one()
-
-        if alumno:
+    
+    def list(self) -> list[Alumno]:
+        with self.session() as session:
+            query = select(Alumno)
+            alumnos = session.exec(query).all()
+            return alumnos
+    
+    def add(self, alumno_a_crear: AlumnoUpsert) -> Alumno:
+        with Session(self.engine) as session:
+            alumno = Alumno(**alumno_a_crear.model_dump())
+            session.add(alumno)
+            session.commit()
+            session.refresh(alumno)
             return alumno
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Alumno not found")
-            
-    def delete(self, session: SessionDep, padron) -> Alumno:
-        alumno = self.find(padron)
-        session.delete(alumno)
-        session.commit()
-        return alumno
-    
-    def update(self, session: SessionDep, padron, nuevo_alumno: AlumnoUpsert) -> Alumno:
-        alumno = self.find(padron)
-        alumno.nombre = nuevo_alumno.nombre
-        alumno.apellido = nuevo_alumno.apellido
-        alumno.edad = nuevo_alumno.edad
 
-        session.add(alumno)
-        session.commit()
-        session.refresh(alumno)
-        return alumno
+    def find(self, padron: int) -> Alumno:
+        with Session(self.engine) as session:
+            alumno = session.exec(select(Alumno).where(Alumno.padron == padron)).first()
+
+            if alumno:
+                return alumno
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Alumno not found")
+            
+    def delete(self, padron: int) -> Alumno:
+        with Session(self.engine) as session:
+            alumno = self.find(padron)
+            session.delete(alumno)
+            session.commit()
+            return alumno
+    
+    def update(self, padron: int, nuevo_alumno: AlumnoUpsert) -> Alumno:
+        with Session(self.engine) as session:
+            alumno = self.find(padron)
+            alumno.nombre = nuevo_alumno.nombre
+            alumno.apellido = nuevo_alumno.apellido
+            alumno.edad = nuevo_alumno.edad
+
+            session.add(alumno)
+            session.commit()
+            session.refresh(alumno)
+            return alumno

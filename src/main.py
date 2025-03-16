@@ -1,17 +1,14 @@
 from fastapi import FastAPI
 
-from src.dependencies.sqlmodel import init_sqlmodel
-from src.dependencies.database import init_dep
+from src.dependencies.sqlmodel import init_engine
+from src.dependencies.database import init_db
 from src.routes.routes import api_router
-from src.seed import seed
 
 def main():
-    init_dep()
-    init_sqlmodel()
+    engine = init_engine()
+    init_db(engine)
 
-    # seed()
+main()
 
 app = FastAPI()
 app.include_router(api_router)
-
-main()

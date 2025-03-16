@@ -1,17 +1,13 @@
-from pydantic import BaseModel, Field
-from sqlmodel import SQLModel
+from pydantic import BaseModel
+from sqlmodel import SQLModel, Field
 
 class AlumnoBase(SQLModel):
     nombre: str
     apellido: str
     edad: int | None = Field(default=None, ge=17)
 
-class Alumno(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-
-    nombre: str
-    apellido: str
-    edad: int | None = Field(default=None, ge=17)
+class Alumno(AlumnoBase, table=True):
+    padron: int = Field(primary_key=True)
 
 class AlumnoUpsert(AlumnoBase):
     pass

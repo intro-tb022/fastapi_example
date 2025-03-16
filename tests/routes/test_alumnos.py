@@ -1,5 +1,4 @@
 from unittest.mock import MagicMock
-from fastapi import Depends
 from fastapi.testclient import TestClient
 
 from src.main import app

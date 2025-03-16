@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 
-from models.alumno import Alumno, AlumnoUpsert, Error
-from dependencies.database import DatabaseDep
+from src.dependencies.database import DatabaseDep
+from src.models.alumno import Alumno, AlumnoUpsert, Error
 
 router = APIRouter()
 

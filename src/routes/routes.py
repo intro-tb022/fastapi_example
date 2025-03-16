@@ -1,6 +1,5 @@
 from fastapi import APIRouter
 
-from src.database.database import Database
 from src.routes import alumnos
 
 api_router = APIRouter()
