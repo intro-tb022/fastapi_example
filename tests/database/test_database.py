@@ -16,7 +16,6 @@ def engine():
 def db(engine):
     return Database(engine)
 
-
 juan_upsert = AlumnoUpsert(nombre= "Juan", apellido= "Perez", edad= 20)
 manuelin_upsert = AlumnoUpsert(nombre= "Manuelin", apellido= "Equis", edad= 21)
 
@@ -24,6 +23,7 @@ class TestDatabase:
     def test_add(self, db):
         juan = db.add(juan_upsert)
 
+        assert juan.padron == 1
         assert db.list() == [juan]
 
     def test_add_autoincrementa_padron(self, db):
@@ -37,15 +37,10 @@ class TestDatabase:
         assert db.list() == []
 
     def test_list_no_vacio(self, db: Database):
-        session = db.session()
-
         al1 = Alumno(nombre="Nombre1", apellido="Apellido1", edad=100)
         al2 = Alumno(nombre="Nombre2", apellido="Apellido2", edad=99)
-        session.add(al1)
-        session.add(al2)
-        session.commit()
-        session.refresh(al1)
-        session.refresh(al2)
+        al1 = db.add(al1)
+        al2 = db.add(al2)
 
         resultado = db.list()
 

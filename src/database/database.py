@@ -17,10 +17,10 @@ class Database:
         session.commit()
     
     def list(self) -> list[Alumno]:
-        with self.session() as session:
-            query = select(Alumno)
-            alumnos = session.exec(query).all()
-            return alumnos
+        session = self.session()
+        query = select(Alumno)
+        alumnos = session.exec(query).all()
+        return alumnos
     
     def add(self, alumno_a_crear: AlumnoUpsert) -> Alumno:
         with Session(self.engine) as session:
@@ -48,9 +48,8 @@ class Database:
     def update(self, padron: int, nuevo_alumno: AlumnoUpsert) -> Alumno:
         with Session(self.engine) as session:
             alumno = self.find(padron)
-            alumno.nombre = nuevo_alumno.nombre
-            alumno.apellido = nuevo_alumno.apellido
-            alumno.edad = nuevo_alumno.edad
+            update_dict = nuevo_alumno.model_dump(exclude_unset=True)
+            alumno.sqlmodel_update(update_dict)
 
             session.add(alumno)
             session.commit()

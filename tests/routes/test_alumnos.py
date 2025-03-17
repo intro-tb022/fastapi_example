@@ -8,11 +8,11 @@ from src.dependencies.database import get_database
 
 client = TestClient(app)
 
-mock_repo = MagicMock(Database)
-app.dependency_overrides[get_database] = lambda: mock_repo
+mock_db = MagicMock(Database)
+app.dependency_overrides[get_database] = lambda: mock_db
 
 def test_get_alumnos():
-    mock_repo.list.return_value = [
+    mock_db.list.return_value = [
         Alumno(padron=1, nombre="Juan", apellido="Perez", edad=20),
         Alumno(padron=2, nombre="Maria", apellido="Lopez", edad=22)
     ]
@@ -26,7 +26,7 @@ def test_get_alumnos():
     assert len(content) == 2
 
 def test_get_alumno():
-    mock_repo.find.return_value = Alumno(padron=1, nombre="Juan", apellido="Perez", edad=20)
+    mock_db.find.return_value = Alumno(padron=1, nombre="Juan", apellido="Perez", edad=20)
 
     response = client.get(
         "/alumnos/1",
@@ -40,7 +40,7 @@ def test_get_alumno():
     assert content["edad"] == 20
 
 def test_create_alumno():
-    mock_repo.add.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
+    mock_db.add.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
 
     data = {"nombre": "Test", "apellido": "Apellido", "edad": 19}
     response = client.post(
@@ -56,7 +56,7 @@ def test_create_alumno():
     assert content["padron"] == 1
 
 def test_update_alumno():
-    mock_repo.update.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
+    mock_db.update.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
 
     data = {"nombre": "Test", "apellido": "Apellido", "edad": 19}
     response = client.put(
@@ -72,7 +72,7 @@ def test_update_alumno():
     assert content["padron"] == 1
 
 def test_delete_alumno():
-    mock_repo.delete.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
+    mock_db.delete.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
 
     response = client.delete(
         "/alumnos/1",
