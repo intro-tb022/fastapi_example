@@ -21,7 +21,7 @@ Setup con db connection a SQLite con modelos de Alumno y Grupo para representar 
 
 `sql-model-with-relations-advanced`
 
-Setup con db connection a SQLite con modelos de Alumo, Grupo, Curso, Materia para representar relaciones N:M
+Basada en `basic-with-structure`, con modelos de Alumo, Grupo, Curso, Materia para representar relaciones
 
 
 ## Setup
