@@ -13,7 +13,7 @@ Setup básico de FastAPI con un modelo de Alumno en memoria pero separando los e
 
 `sql-model`
 
-Setup con db connection a SQLite de un modelo de Alumno.
+Basada en `basic-with-structure`, los datos se guardan en una DB de SQLite.
 
 `sql-model-with-relations`
 
