@@ -2,18 +2,33 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from src.database.database import Database
+from src.database.db_alumnos import DBAlumnos
+from src.database.db_grupos import DBGrupos
 
-__database_instance = None
+__database_alumnos_instance = None
+__database_grupos_instance = None
+
 
 def init_db(engine):
-    global __database_instance
-    __database_instance = Database(engine)
+    global __database_alumnos_instance
+    global __database_grupos_instance
+    __database_alumnos_instance = DBAlumnos()
+    __database_grupos_instance = DBGrupos()
 
-def get_database() -> Database:
-    global __database_instance
-    if __database_instance is None:
+
+def get_db_alumnos() -> DBAlumnos:
+    global __database_alumnos_instance
+    if __database_alumnos_instance is None:
         raise RuntimeError("Database instance not initialized.")
-    return __database_instance
+    return __database_alumnos_instance
 
-DatabaseDep = Annotated[Database, Depends(get_database)]
+
+def get_db_grupos() -> DBGrupos:
+    global __database_grupos_instance
+    if __database_grupos_instance is None:
+        raise RuntimeError("Database instance not initialized.")
+    return __database_grupos_instance
+
+
+DBAlumnosDep = Annotated[DBAlumnos, Depends(get_db_alumnos)]
+DBGruposDep = Annotated[DBGrupos, Depends(get_db_grupos)]

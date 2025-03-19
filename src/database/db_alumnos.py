@@ -1,0 +1,60 @@
+from fastapi import HTTPException, status
+from sqlmodel import Session, select
+
+from src.models.grupo import Grupo
+from src.models.alumno import Alumno, AlumnoUpsert
+
+
+class DBAlumnos:
+    def cargar_alumnos(self, session: Session, alumnos: list[Alumno]):
+        session.add_all(alumnos)
+        session.commit()
+
+    def list(self, session: Session) -> list[Alumno]:
+        query = select(Alumno)
+        alumnos = session.exec(query).all()
+        return alumnos
+
+    def add(self, session: Session, alumno_a_crear: AlumnoUpsert) -> Alumno:
+        alumno = Alumno(**alumno_a_crear.model_dump())
+        session.add(alumno)
+        session.commit()
+        session.refresh(alumno)
+        return alumno
+
+    def find(self, session: Session, padron: int) -> Alumno:
+        alumno = session.exec(select(Alumno).where(Alumno.padron == padron)).first()
+
+        if alumno:
+            return alumno
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Alumno not found"
+        )
+
+    def delete(self, session: Session, padron: int) -> Alumno:
+        alumno = self.find(session, padron)
+        session.delete(alumno)
+        session.commit()
+        return alumno
+
+    def update(
+        self, session: Session, padron: int, nuevo_alumno: AlumnoUpsert
+    ) -> Alumno:
+        alumno = self.find(session, padron)
+        update_dict = nuevo_alumno.model_dump(exclude_unset=True)
+        alumno.sqlmodel_update(update_dict)
+
+        session.add(alumno)
+        session.commit()
+        session.refresh(alumno)
+        return alumno
+
+    def inscribirse_a_grupo(
+        self, session: Session, padron: int, grupo: Grupo
+    ) -> Alumno:
+        alumno = self.find(session, padron)
+        alumno.grupo = grupo
+        session.add(alumno)
+        session.commit()
+        session.refresh(alumno)
+        return alumno
