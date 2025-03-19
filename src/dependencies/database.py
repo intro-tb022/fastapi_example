@@ -12,8 +12,8 @@ __database_grupos_instance = None
 def init_db(engine):
     global __database_alumnos_instance
     global __database_grupos_instance
-    __database_alumnos_instance = DBAlumnos()
-    __database_grupos_instance = DBGrupos()
+    __database_alumnos_instance = DBAlumnos(engine)
+    __database_grupos_instance = DBGrupos(engine)
 
 
 def get_db_alumnos() -> DBAlumnos:
