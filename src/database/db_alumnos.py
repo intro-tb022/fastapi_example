@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
 from sqlmodel import Session, select
 
+from src.models.integrante import Integrante
 from src.models.grupo import Grupo
 from src.models.alumno import Alumno, AlumnoUpsert
 
@@ -58,8 +59,8 @@ class DBAlumnos:
         session = self.session()
         grupo = session.merge(grupo)
         alumno = self.__get(session, padron)
-        alumno.grupo = grupo
-        session.add(alumno)
+        integrante = Integrante(alumno=alumno, grupo=grupo)
+        session.add(integrante)
         session.commit()
         session.refresh(alumno)
         return alumno

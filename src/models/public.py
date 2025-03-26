@@ -1,3 +1,4 @@
+from src.models.integrante import IntegranteBase
 from src.models.alumno import AlumnoBase
 from src.models.grupo import GrupoBase
 
@@ -10,9 +11,17 @@ class GrupoPublic(GrupoBase):
     id: int
 
 
+class IntegrantePublic(IntegranteBase):
+    pass
+
+
 class AlumnoPublicWithRelations(AlumnoPublic):
-    grupo: GrupoPublic | None = None
+    grupos: list[GrupoPublic] = []
+
+
+class IntegrantePublicWithAlumno(IntegrantePublic):
+    alumno: AlumnoPublic
 
 
 class GrupoPublicWithIntegrantes(GrupoPublic):
-    integrantes: list[AlumnoPublic] = []
+    integrantes: list[IntegrantePublicWithAlumno] = []
