@@ -4,9 +4,11 @@ from src.dependencies.sqlmodel import init_engine
 from src.dependencies.database import init_db
 from src.routes.routes import api_router
 
+
 def main():
     engine = init_engine()
     init_db(engine)
+
 
 main()
 
