@@ -4,16 +4,20 @@ from fastapi import Depends
 
 from src.database.db_alumnos import DBAlumnos
 from src.database.db_grupos import DBGrupos
+from src.database.db_integrantes import DBIntegrantes
 
 __database_alumnos_instance = None
 __database_grupos_instance = None
+__database_integrantes_instance = None
 
 
 def init_db(engine):
     global __database_alumnos_instance
     global __database_grupos_instance
+    global __database_integrantes_instance
     __database_alumnos_instance = DBAlumnos(engine)
     __database_grupos_instance = DBGrupos(engine)
+    __database_integrantes_instance = DBIntegrantes(engine)
 
 
 def get_db_alumnos() -> DBAlumnos:
@@ -30,5 +34,13 @@ def get_db_grupos() -> DBGrupos:
     return __database_grupos_instance
 
 
+def get_db_integrantes() -> DBIntegrantes:
+    global __database_integrantes_instance
+    if __database_integrantes_instance is None:
+        raise RuntimeError("Database instance not initialized.")
+    return __database_integrantes_instance
+
+
 DBAlumnosDep = Annotated[DBAlumnos, Depends(get_db_alumnos)]
 DBGruposDep = Annotated[DBGrupos, Depends(get_db_grupos)]
+DBIntegrantesDep = Annotated[DBIntegrantes, Depends(get_db_integrantes)]

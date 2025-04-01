@@ -12,10 +12,6 @@ class Grupo(GrupoBase, table=True):
 
     integrantes: list[Integrante] | None = Relationship()
 
-    # alumnos: list["Alumno"] | None = Relationship(
-    #     back_populates="grupos", link_model=Integrante
-    # )
-
 
 class GrupoUpsert(GrupoBase):
-    pass
+    integrantes: list[Integrante] | None

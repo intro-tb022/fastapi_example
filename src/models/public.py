@@ -23,5 +23,10 @@ class IntegrantePublicWithAlumno(IntegrantePublic):
     alumno: AlumnoPublic
 
 
+class IntegrantePublicWithRelations(IntegrantePublic):
+    alumno: AlumnoPublic
+    grupo: GrupoPublic
+
+
 class GrupoPublicWithIntegrantes(GrupoPublic):
     integrantes: list[IntegrantePublicWithAlumno] = []

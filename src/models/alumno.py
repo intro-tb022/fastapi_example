@@ -13,8 +13,6 @@ class AlumnoBase(SQLModel):
 class Alumno(AlumnoBase, table=True):
     padron: int = Field(primary_key=True)
 
-    # integrantes: list[Integrante] | None = Relationship()
-
     grupos: list[Grupo] | None = Relationship(link_model=Integrante)
 
 
