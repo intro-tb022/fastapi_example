@@ -1,4 +1,0 @@
-fastapi[standard]
-pytest
-pytest-cov
-pytest-mock
