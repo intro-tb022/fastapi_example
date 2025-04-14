@@ -19,24 +19,22 @@ Setup con db connection a SQLite de un modelo de Alumno.
 
 Setup con db connection a SQLite con modelos de Alumo, Grupo, Integrante para representar relaciones N:M
 
-
 ## Setup
 
 1. Setup pyenv
 ```
-pyenv local 3.13.2
+pyenv install 3.13.2
 ```
 
-2. Crear venv
+2. Crear venv usando pipenv 
 
 ```
-pyenv exec python -m venv .venv
-source .venv/bin/activate
+pipenv shell
 ```
 
 3. Instalar dependencias
 ```
-pip install -r requirements.txt
+pipenv install
 ```
 
 ## Correr migraciones
@@ -46,10 +44,10 @@ alembic upgrade head
 
 ## Correr servidor
 ```
-python -m astapi dev main.py
+python -m fastapi dev src/main.py
 ```
 
 ## Correr tests
 ```
-python -m pytest test/
+python -m pytest tests/
 ```
