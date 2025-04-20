@@ -1,20 +1,16 @@
 from unittest.mock import MagicMock
 
 from fastapi.testclient import TestClient
-from sqlmodel import Session
 
 from database.db_grupos import DBGrupos
 from dependencies.database import get_db_grupos
-from dependencies.sqlmodel import get_session
 from main import app
 from models.alumno import Alumno
-from models.grupo import Grupo
-from models.integrante import Integrante
+from models.grupo import Grupo, GrupoUpsert
+from models.integrante import Integrante, IntegranteCreate
+from tests.mock_utils import mock_session
 
 client = TestClient(app)
-
-mock_session = MagicMock(Session)
-app.dependency_overrides[get_session] = lambda: mock_session
 
 mock_db = MagicMock(DBGrupos)
 app.dependency_overrides[get_db_grupos] = lambda: mock_db
@@ -34,30 +30,38 @@ def test_get_grupos():
     content = response.json()
     assert len(content) == 2
 
+    mock_db.list.assert_called_once_with(mock_session)
+
 
 def test_get_grupo():
-    mock_db.find.return_value = Grupo(id=1, nombre="Grupo 1")
+    id = 1
+    mock_db.find.return_value = Grupo(id=id, nombre="Grupo 1")
 
     response = client.get(
-        "/grupos/1",
+        f"/grupos/{id}",
     )
 
     assert response.status_code == 200
     content = response.json()
-    assert content["id"] == 1
+    assert content["id"] == id
     assert content["nombre"] == "Grupo 1"
+
+    mock_db.find.assert_called_once_with(mock_session, id)
 
 
 def test_create_grupo():
-    mock_db.add.return_value = Grupo(id=1, nombre="Grupo Test")
+    id = 1
+    mock_db.add.return_value = Grupo(id=id, nombre="Grupo Test")
 
     data = {"nombre": "Grupo Test"}
     response = client.post("/grupos/", json=data)
 
     assert response.status_code == 201
     content = response.json()
-    assert content["id"] == 1
+    assert content["id"] == id
     assert content["nombre"] == "Grupo Test"
+
+    mock_db.add.assert_called_once_with(mock_session, GrupoUpsert(nombre="Grupo Test"))
 
 
 def test_inscribir():
@@ -83,6 +87,8 @@ def test_inscribir():
         {"nota": None, "alumno": {"nombre": "Pepito", "apellido": "Test", "edad": None, "padron": padron}}
     ]
 
+    mock_db.inscribir.assert_called_once_with(mock_session, grupo_id, IntegranteCreate(padron=padron))
+
 
 def test_desinscribir():
     grupo_id = 1
@@ -98,3 +104,5 @@ def test_desinscribir():
     assert content["id"] == grupo_id
     assert content["nombre"] == nombre
     assert content["integrantes"] == []
+
+    mock_db.desinscribir.assert_called_once_with(mock_session, grupo_id, padron)

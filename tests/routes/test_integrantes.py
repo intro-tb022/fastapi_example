@@ -5,16 +5,13 @@ from sqlmodel import Session
 
 from database.db_integrantes import DBIntegrantes
 from dependencies.database import get_db_integrantes
-from dependencies.sqlmodel import get_session
 from main import app
 from models.alumno import Alumno
 from models.grupo import Grupo
 from models.integrante import Integrante
+from tests.mock_utils import mock_session
 
 client = TestClient(app)
-
-mock_session = MagicMock(Session)
-app.dependency_overrides[get_session] = lambda: mock_session
 
 mock_db = MagicMock(DBIntegrantes)
 app.dependency_overrides[get_db_integrantes] = lambda: mock_db
@@ -43,3 +40,5 @@ def test_poner_nota_valido():
     assert content["alumno"] is not None
     assert content["alumno"]["padron"] == padron
     assert content["nota"] == 10
+
+    mock_db.poner_nota.assert_called_once_with(mock_session, grupo_id, padron, nota)

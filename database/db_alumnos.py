@@ -41,24 +41,6 @@ class DBAlumnos:
         session.refresh(alumno)
         return alumno
 
-    def inscribirse_a_grupo(self, session: Session, padron: int, grupo_id: int) -> Alumno:
-        alumno = self.__get(session, padron)
-        integrante = Integrante(grupo_id=grupo_id, alumno_padron=padron)
-        session.add(integrante)
-        session.commit()
-        session.refresh(alumno)
-        return alumno
-
-    def remover_de_grupo(self, session: Session, padron: int, grupo_id: int) -> Alumno:
-        alumno = self.__get(session, padron)
-        integrante = session.exec(
-            select(Integrante).where(Integrante.alumno_padron == padron, Integrante.grupo_id == grupo_id)
-        ).first()
-        session.delete(integrante)
-        session.commit()
-        session.refresh(alumno)
-        return alumno
-
     def __get(self, session: Session, padron: int) -> Alumno:
         alumno = session.exec(select(Alumno).where(Alumno.padron == padron)).first()
 

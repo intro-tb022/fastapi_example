@@ -35,23 +35,3 @@ def update(session: SessionDep, db: DBAlumnosDep, padron: int, alumno_actualizad
 def delete(session: SessionDep, db: DBAlumnosDep, padron: int) -> AlumnoPublic:
     alumno = db.delete(session, padron)
     return alumno
-
-
-@router.put("/{padron}/asignar_grupo")
-def asignar_grupo(
-    session: SessionDep,
-    db_alumnos: DBAlumnosDep,
-    padron: int,
-    grupo_id: int,
-) -> AlumnoPublicWithRelations:
-    return db_alumnos.inscribirse_a_grupo(session, padron, grupo_id)
-
-
-@router.put("/{padron}/remover_grupo")
-def remover_grupo(
-    session: SessionDep,
-    db_alumnos: DBAlumnosDep,
-    padron: int,
-    grupo_id: int,
-) -> AlumnoPublicWithRelations:
-    return db_alumnos.remover_de_grupo(session, padron, grupo_id)
