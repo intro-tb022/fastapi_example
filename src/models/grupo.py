@@ -1,6 +1,6 @@
 from sqlmodel import Field, Relationship, SQLModel
 
-from src.models.integrante import Integrante
+from src.models.integrante import Integrante, IntegranteCreate
 
 
 class GrupoBase(SQLModel):
@@ -14,4 +14,4 @@ class Grupo(GrupoBase, table=True):
 
 
 class GrupoUpsert(GrupoBase):
-    integrantes: list[Integrante] | None
+    integrantes: list[IntegranteCreate] = []

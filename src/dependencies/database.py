@@ -11,13 +11,13 @@ __database_grupos_instance = None
 __database_integrantes_instance = None
 
 
-def init_db(engine):
+def init_db():
     global __database_alumnos_instance
     global __database_grupos_instance
     global __database_integrantes_instance
-    __database_alumnos_instance = DBAlumnos(engine)
-    __database_grupos_instance = DBGrupos(engine)
-    __database_integrantes_instance = DBIntegrantes(engine)
+    __database_alumnos_instance = DBAlumnos()
+    __database_grupos_instance = DBGrupos()
+    __database_integrantes_instance = DBIntegrantes()
 
 
 def get_db_alumnos() -> DBAlumnos:

@@ -6,29 +6,19 @@ from src.models.grupo import Grupo, GrupoUpsert
 
 
 class DBGrupos:
-    def __init__(self, engine):
-        self.engine = engine
-
-    def session(self):
-        with Session(self.engine) as session:
-            return session
-
-    def list(self) -> list[Grupo]:
-        session = self.session()
+    def list(self, session: Session) -> list[Grupo]:
         return session.exec(select(Grupo)).all()
 
-    def find(self, grupo_id: int) -> Grupo:
-        session = self.session()
-        return self.__get(grupo_id, session)
+    def find(self, session: Session, grupo_id: int) -> Grupo:
+        return self.__get(session, grupo_id)
 
-    def add(self, grupo_a_crear: GrupoUpsert) -> Grupo:
-        session = self.session()
+    def add(self, session: Session, grupo_a_crear: GrupoUpsert) -> Grupo:
         grupo = Grupo(nombre=grupo_a_crear.nombre)
         session.add(grupo)
         integrantes = [
             Integrante(
                 grupo=grupo,
-                alumno_padron=integrante.alumno_padron,
+                alumno_padron=integrante.padron,
                 nota=integrante.nota,
             )
             for integrante in grupo_a_crear.integrantes
@@ -38,10 +28,8 @@ class DBGrupos:
         session.refresh(grupo)
         return grupo
 
-    def __get(self, grupo_id: int, session: Session) -> Grupo:
+    def __get(self, session: Session, grupo_id: int) -> Grupo:
         grupo = session.exec(select(Grupo).where(Grupo.id == grupo_id)).first()
         if grupo:
             return grupo
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Grupo not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Grupo not found")

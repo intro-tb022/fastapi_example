@@ -8,13 +8,12 @@ class IntegranteBase(SQLModel):
 
 
 class Integrante(IntegranteBase, table=True):
-
-    grupo_id: int | None = Field(
-        nullable=False, foreign_key="grupo.id", primary_key=True
-    )
+    grupo_id: int = Field(nullable=False, foreign_key="grupo.id", primary_key=True)
     grupo: "Grupo" = Relationship()
 
-    alumno_padron: int | None = Field(
-        nullable=False, foreign_key="alumno.padron", primary_key=True
-    )
+    alumno_padron: int = Field(nullable=False, foreign_key="alumno.padron", primary_key=True)
     alumno: "Alumno" = Relationship()
+
+
+class IntegranteCreate(IntegranteBase):
+    padron: int

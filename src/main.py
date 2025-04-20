@@ -6,8 +6,8 @@ from src.routes.routes import api_router
 
 
 def main():
-    engine = init_engine()
-    init_db(engine)
+    init_engine()
+    init_db()
 
 
 main()

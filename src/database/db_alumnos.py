@@ -2,50 +2,36 @@ from fastapi import HTTPException, status
 from sqlmodel import Session, select
 
 from src.models.integrante import Integrante
-from src.models.grupo import Grupo
 from src.models.alumno import Alumno, AlumnoUpsert
 
 
 class DBAlumnos:
-    def __init__(self, engine):
-        self.engine = engine
-
-    def session(self):
-        with Session(self.engine) as session:
-            return session
-
-    def cargar_alumnos(self, alumnos: list[Alumno]):
-        session = self.session()
+    def cargar_alumnos(self, session: Session, alumnos: list[Alumno]):
         session.add_all(alumnos)
         session.commit()
 
-    def list(self) -> list[Alumno]:
-        session = self.session()
+    def list(self, session: Session) -> list[Alumno]:
         query = select(Alumno)
         alumnos = session.exec(query).all()
         return alumnos
 
-    def add(self, alumno_a_crear: AlumnoUpsert) -> Alumno:
-        session = self.session()
+    def add(self, session: Session, alumno_a_crear: AlumnoUpsert) -> Alumno:
         alumno = Alumno(**alumno_a_crear.model_dump())
         session.add(alumno)
         session.commit()
         session.refresh(alumno)
         return alumno
 
-    def find(self, padron: int) -> Alumno:
-        session = self.session()
+    def find(self, session: Session, padron: int) -> Alumno:
         return self.__get(session, padron)
 
-    def delete(self, padron: int) -> Alumno:
-        session = self.session()
+    def delete(self, session: Session, padron: int) -> Alumno:
         alumno = self.__get(session, padron)
         session.delete(alumno)
         session.commit()
         return alumno
 
-    def update(self, padron: int, nuevo_alumno: AlumnoUpsert) -> Alumno:
-        session = self.session()
+    def update(self, session: Session, padron: int, nuevo_alumno: AlumnoUpsert) -> Alumno:
         alumno = self.__get(session, padron)
         update_dict = nuevo_alumno.model_dump(exclude_unset=True)
         alumno.sqlmodel_update(update_dict)
@@ -55,12 +41,20 @@ class DBAlumnos:
         session.refresh(alumno)
         return alumno
 
-    def inscribirse_a_grupo(self, padron: int, grupo: Grupo) -> Alumno:
-        session = self.session()
-        grupo = session.merge(grupo)
+    def inscribirse_a_grupo(self, session: Session, padron: int, grupo_id: int) -> Alumno:
         alumno = self.__get(session, padron)
-        integrante = Integrante(alumno=alumno, grupo=grupo)
+        integrante = Integrante(grupo_id=grupo_id, alumno_padron=padron)
         session.add(integrante)
+        session.commit()
+        session.refresh(alumno)
+        return alumno
+
+    def remover_de_grupo(self, session: Session, padron: int, grupo_id: int) -> Alumno:
+        alumno = self.__get(session, padron)
+        integrante = session.exec(
+            select(Integrante).where(Integrante.alumno_padron == padron, Integrante.grupo_id == grupo_id)
+        ).first()
+        session.delete(integrante)
         session.commit()
         session.refresh(alumno)
         return alumno
@@ -70,6 +64,4 @@ class DBAlumnos:
 
         if alumno:
             return alumno
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Alumno not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Alumno not found")
