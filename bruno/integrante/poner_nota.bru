@@ -5,7 +5,11 @@ meta {
 }
 
 put {
-  url: {{host}}/integrantes/1/107272/poner_nota
+  url: {{host}}/integrantes/1/107272/poner_nota?nota=7
   body: none
   auth: inherit
+}
+
+params:query {
+  nota: 7
 }

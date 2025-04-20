@@ -44,7 +44,7 @@ alembic upgrade head
 
 ## Correr servidor
 ```
-python -m fastapi dev src/main.py
+python -m fastapi dev main.py
 ```
 
 ## Correr tests
