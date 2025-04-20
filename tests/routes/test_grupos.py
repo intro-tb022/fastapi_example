@@ -1,12 +1,18 @@
 from unittest.mock import MagicMock
-from fastapi.testclient import TestClient
 
-from src.dependencies.database import get_db_grupos
+from fastapi.testclient import TestClient
+from sqlmodel import Session
+
 from src.database.db_grupos import DBGrupos
+from src.dependencies.database import get_db_grupos
+from src.dependencies.sqlmodel import get_session
 from src.main import app
 from src.models.grupo import Grupo
 
 client = TestClient(app)
+
+mock_session = MagicMock(Session)
+app.dependency_overrides[get_session] = lambda: mock_session
 
 mock_db = MagicMock(DBGrupos)
 app.dependency_overrides[get_db_grupos] = lambda: mock_db

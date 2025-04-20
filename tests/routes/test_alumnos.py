@@ -1,19 +1,23 @@
 from unittest.mock import MagicMock
-from fastapi.testclient import TestClient
 
-from src.models.grupo import Grupo
+from fastapi.testclient import TestClient
+from sqlmodel import Session
+
+from src.database.db_alumnos import DBAlumnos
 from src.database.db_grupos import DBGrupos
+from src.dependencies.database import get_db_alumnos, get_db_grupos
+from src.dependencies.sqlmodel import get_session
 from src.main import app
 from src.models.alumno import Alumno
-from src.database.db_alumnos import DBAlumnos
-from src.dependencies.database import get_db_alumnos, get_db_grupos
+from src.models.grupo import Grupo
 
 client = TestClient(app)
 
+mock_session = MagicMock(Session)
+app.dependency_overrides[get_session] = lambda: mock_session
+
 mock_db = MagicMock(DBAlumnos)
 app.dependency_overrides[get_db_alumnos] = lambda: mock_db
-mock_db_grupos = MagicMock(DBGrupos)
-app.dependency_overrides[get_db_grupos] = lambda: mock_db_grupos
 
 
 def test_get_alumnos():
@@ -32,9 +36,7 @@ def test_get_alumnos():
 
 
 def test_get_alumno():
-    mock_db.find.return_value = Alumno(
-        padron=1, nombre="Juan", apellido="Perez", edad=20
-    )
+    mock_db.find.return_value = Alumno(padron=1, nombre="Juan", apellido="Perez", edad=20)
 
     response = client.get(
         "/alumnos/1",
@@ -49,9 +51,7 @@ def test_get_alumno():
 
 
 def test_create_alumno():
-    mock_db.add.return_value = Alumno(
-        padron=1, nombre="Test", apellido="Apellido", edad=19
-    )
+    mock_db.add.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
 
     data = {"nombre": "Test", "apellido": "Apellido", "edad": 19}
     response = client.post("/alumnos/", json=data)
@@ -65,9 +65,7 @@ def test_create_alumno():
 
 
 def test_update_alumno():
-    mock_db.update.return_value = Alumno(
-        padron=1, nombre="Test", apellido="Apellido", edad=19
-    )
+    mock_db.update.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
 
     data = {"nombre": "Test", "apellido": "Apellido", "edad": 19}
     response = client.put("/alumnos/1", json=data)
@@ -81,9 +79,7 @@ def test_update_alumno():
 
 
 def test_delete_alumno():
-    mock_db.delete.return_value = Alumno(
-        padron=1, nombre="Test", apellido="Apellido", edad=19
-    )
+    mock_db.delete.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
 
     response = client.delete(
         "/alumnos/1",
@@ -100,10 +96,9 @@ def test_delete_alumno():
 def test_asignar_grupo():
     grupo_id = 1
     grupo = Grupo(id=grupo_id, nombre="Grupo Test")
-    mock_db_grupos.find.return_value = grupo
     padron = 1
     mock_db.inscribirse_a_grupo.return_value = Alumno(
-        padron=padron, nombre="Test", apellido="Apellido", edad=19, grupo=grupo
+        padron=padron, nombre="Test", apellido="Apellido", edad=19, grupos=[grupo]
     )
 
     response = client.put(
@@ -113,5 +108,5 @@ def test_asignar_grupo():
 
     assert response.status_code == 200
     content = response.json()
-    assert content["grupo"] != None
-    assert content["grupo"]["id"] == grupo_id
+    assert content["grupos"] != None
+    assert content["grupos"][0]["id"] == grupo_id
