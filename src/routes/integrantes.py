@@ -4,7 +4,6 @@ from src.dependencies.database import DBIntegrantesDep
 from src.dependencies.sqlmodel import SessionDep
 from src.models.public import IntegrantePublicWithRelations
 
-
 router = APIRouter()
 
 

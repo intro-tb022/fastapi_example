@@ -1,6 +1,6 @@
-from src.models.integrante import IntegranteBase
 from src.models.alumno import AlumnoBase
 from src.models.grupo import GrupoBase
+from src.models.integrante import IntegranteBase
 
 
 class AlumnoPublic(AlumnoBase):

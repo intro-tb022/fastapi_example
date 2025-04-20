@@ -1,8 +1,8 @@
 from fastapi import HTTPException, status
 from sqlmodel import Session, select
 
-from src.models.integrante import Integrante
 from src.models.grupo import Grupo, GrupoUpsert
+from src.models.integrante import Integrante
 
 
 class DBGrupos:

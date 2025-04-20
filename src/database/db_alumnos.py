@@ -1,8 +1,8 @@
 from fastapi import HTTPException, status
 from sqlmodel import Session, select
 
-from src.models.integrante import Integrante
 from src.models.alumno import Alumno, AlumnoUpsert
+from src.models.integrante import Integrante
 
 
 class DBAlumnos:

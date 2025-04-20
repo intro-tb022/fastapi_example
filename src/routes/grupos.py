@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException, status
 
-from src.models.public import GrupoPublic, GrupoPublicWithIntegrantes
 from src.dependencies.database import DBGruposDep
 from src.dependencies.sqlmodel import SessionDep
+from src.models.error import Error
 from src.models.grupo import GrupoUpsert
 from src.models.integrante import MAX_SIZE
-from src.models.error import Error
+from src.models.public import GrupoPublic, GrupoPublicWithIntegrantes
 
 router = APIRouter()
 
