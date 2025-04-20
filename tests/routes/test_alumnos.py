@@ -3,13 +3,13 @@ from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
-from src.database.db_alumnos import DBAlumnos
-from src.database.db_grupos import DBGrupos
-from src.dependencies.database import get_db_alumnos, get_db_grupos
-from src.dependencies.sqlmodel import get_session
-from src.main import app
-from src.models.alumno import Alumno
-from src.models.grupo import Grupo
+from database.db_alumnos import DBAlumnos
+from database.db_grupos import DBGrupos
+from dependencies.database import get_db_alumnos, get_db_grupos
+from dependencies.sqlmodel import get_session
+from main import app
+from models.alumno import Alumno
+from models.grupo import Grupo
 
 client = TestClient(app)
 

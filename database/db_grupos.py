@@ -1,8 +1,8 @@
 from fastapi import HTTPException, status
 from sqlmodel import Session, select
 
-from src.models.grupo import Grupo, GrupoUpsert
-from src.models.integrante import Integrante
+from models.grupo import Grupo, GrupoUpsert
+from models.integrante import Integrante, IntegranteCreate
 
 
 class DBGrupos:
@@ -24,6 +24,24 @@ class DBGrupos:
             for integrante in grupo_a_crear.integrantes
         ]
         session.add_all(integrantes)
+        session.commit()
+        session.refresh(grupo)
+        return grupo
+
+    def inscribir(self, session: Session, grupo_id: int, integrante_nuevo: IntegranteCreate) -> Grupo:
+        grupo = self.__get(session, grupo_id)
+        integrante = Integrante(grupo_id=grupo_id, alumno_padron=integrante_nuevo.padron)
+        session.add(integrante)
+        session.commit()
+        session.refresh(grupo)
+        return grupo
+
+    def desinscribir(self, session: Session, grupo_id: int, padron: int) -> Grupo:
+        grupo = self.__get(session, grupo_id)
+        integrante = session.exec(
+            select(Integrante).where(Integrante.alumno_padron == padron, Integrante.grupo_id == grupo_id)
+        ).first()
+        session.delete(integrante)
         session.commit()
         session.refresh(grupo)
         return grupo

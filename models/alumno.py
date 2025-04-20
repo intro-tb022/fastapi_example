@@ -1,7 +1,7 @@
 from sqlmodel import Field, Relationship, SQLModel
 
-from src.models.grupo import Grupo
-from src.models.integrante import Integrante
+from models.grupo import Grupo
+from models.integrante import Integrante
 
 
 class AlumnoBase(SQLModel):

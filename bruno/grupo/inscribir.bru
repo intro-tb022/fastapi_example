@@ -1,0 +1,21 @@
+meta {
+  name: inscribir
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{host}}/grupos/1/integrantes
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "padron": 105345
+  }
+}
+
+assert {
+  : 
+}

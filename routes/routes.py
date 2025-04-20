@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.routes import alumnos, grupos, integrantes
+from routes import alumnos, grupos, integrantes
 
 api_router = APIRouter()
 api_router.include_router(alumnos.router, prefix="/alumnos", tags=["alumnos"])

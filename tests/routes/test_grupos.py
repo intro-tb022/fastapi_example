@@ -3,11 +3,13 @@ from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
-from src.database.db_grupos import DBGrupos
-from src.dependencies.database import get_db_grupos
-from src.dependencies.sqlmodel import get_session
-from src.main import app
-from src.models.grupo import Grupo
+from database.db_grupos import DBGrupos
+from dependencies.database import get_db_grupos
+from dependencies.sqlmodel import get_session
+from main import app
+from models.alumno import Alumno
+from models.grupo import Grupo
+from models.integrante import Integrante
 
 client = TestClient(app)
 
@@ -56,3 +58,43 @@ def test_create_grupo():
     content = response.json()
     assert content["id"] == 1
     assert content["nombre"] == "Grupo Test"
+
+
+def test_inscribir():
+    grupo_id = 1
+    padron = 12345
+    nombre = "Grupo Test"
+
+    integrantes = [
+        Integrante(
+            alumno=Alumno(padron=padron, nombre="Pepito", apellido="Test"), grupo=Grupo(id=grupo_id, nombre=nombre)
+        )
+    ]
+    mock_db.inscribir.return_value = Grupo(id=grupo_id, nombre=nombre, integrantes=integrantes)
+
+    data = {"padron": padron}
+    response = client.post(f"/grupos/{grupo_id}/integrantes", json=data)
+
+    assert response.status_code == 201
+    content = response.json()
+    assert content["id"] == grupo_id
+    assert content["nombre"] == nombre
+    assert content["integrantes"] == [
+        {"nota": None, "alumno": {"nombre": "Pepito", "apellido": "Test", "edad": None, "padron": padron}}
+    ]
+
+
+def test_desinscribir():
+    grupo_id = 1
+    padron = 12345
+    nombre = "Grupo Test"
+
+    mock_db.desinscribir.return_value = Grupo(id=grupo_id, nombre=nombre, integrantes=[])
+
+    response = client.delete(f"/grupos/{grupo_id}/integrantes/{padron}")
+
+    assert response.status_code == 200
+    content = response.json()
+    assert content["id"] == grupo_id
+    assert content["nombre"] == nombre
+    assert content["integrantes"] == []

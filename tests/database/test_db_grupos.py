@@ -2,8 +2,8 @@ import pytest
 from fastapi import HTTPException
 from sqlmodel import Session, SQLModel, StaticPool, create_engine
 
-from src.database.db_grupos import DBGrupos
-from src.models.grupo import GrupoUpsert
+from database.db_grupos import DBGrupos
+from models.grupo import GrupoUpsert
 
 
 @pytest.fixture

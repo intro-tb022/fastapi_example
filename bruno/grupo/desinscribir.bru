@@ -1,0 +1,21 @@
+meta {
+  name: desinscribir
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{host}}/grupos/1/integrantes/105345
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "padron": 105345
+  }
+}
+
+assert {
+  : 
+}

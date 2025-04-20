@@ -2,8 +2,8 @@ import pytest
 from fastapi import HTTPException
 from sqlmodel import Session, SQLModel, StaticPool, create_engine
 
-from src.database.db_alumnos import DBAlumnos
-from src.models.alumno import Alumno, AlumnoUpsert
+from database.db_alumnos import DBAlumnos
+from models.alumno import Alumno, AlumnoUpsert
 
 
 @pytest.fixture

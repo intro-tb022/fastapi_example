@@ -2,9 +2,9 @@ from typing import Annotated
 
 from fastapi import Depends
 
-from src.database.db_alumnos import DBAlumnos
-from src.database.db_grupos import DBGrupos
-from src.database.db_integrantes import DBIntegrantes
+from database.db_alumnos import DBAlumnos
+from database.db_grupos import DBGrupos
+from database.db_integrantes import DBIntegrantes
 
 __database_alumnos_instance = None
 __database_grupos_instance = None

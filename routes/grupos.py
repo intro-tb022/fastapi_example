@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException, status
 
-from src.dependencies.database import DBGruposDep
-from src.dependencies.sqlmodel import SessionDep
-from src.models.error import Error
-from src.models.grupo import GrupoUpsert
-from src.models.integrante import MAX_SIZE
-from src.models.public import GrupoPublic, GrupoPublicWithIntegrantes
+from dependencies.database import DBGruposDep
+from dependencies.sqlmodel import SessionDep
+from models.error import Error
+from models.grupo import GrupoUpsert
+from models.integrante import MAX_SIZE, IntegranteCreate
+from models.public import GrupoPublic, GrupoPublicWithIntegrantes
 
 router = APIRouter()
 
@@ -33,3 +33,23 @@ def create(session: SessionDep, db: DBGruposDep, grupo_a_crear: GrupoUpsert) -> 
         )
     grupo = db.add(session, grupo_a_crear)
     return grupo
+
+
+@router.post("/{grupo_id}/integrantes", status_code=status.HTTP_201_CREATED)
+def inscribir(
+    session: SessionDep,
+    db: DBGruposDep,
+    grupo_id: int,
+    integrante_nuevo: IntegranteCreate,
+) -> GrupoPublicWithIntegrantes:
+    return db.inscribir(session, grupo_id, integrante_nuevo)
+
+
+@router.delete("/{grupo_id}/integrantes/{padron}")
+def desinscribir(
+    session: SessionDep,
+    db: DBGruposDep,
+    grupo_id: int,
+    padron: int,
+) -> GrupoPublicWithIntegrantes:
+    return db.desinscribir(session, grupo_id, padron)

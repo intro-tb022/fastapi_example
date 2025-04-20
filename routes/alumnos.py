@@ -1,10 +1,10 @@
 from fastapi import APIRouter, status
 
-from src.dependencies.database import DBAlumnosDep
-from src.dependencies.sqlmodel import SessionDep
-from src.models.alumno import AlumnoUpsert
-from src.models.error import Error
-from src.models.public import AlumnoPublic, AlumnoPublicWithRelations
+from dependencies.database import DBAlumnosDep
+from dependencies.sqlmodel import SessionDep
+from models.alumno import AlumnoUpsert
+from models.error import Error
+from models.public import AlumnoPublic, AlumnoPublicWithRelations
 
 router = APIRouter()
 
