@@ -65,11 +65,8 @@ class TestDBAlumnos:
     def test_find_no_existente(self, session: Session, db: DBAlumnos):
         db.add(session, juan_upsert)
 
-        try:
+        with pytest.raises(HTTPException, match="404: Alumno not found"):
             db.find(session, 3)
-            assert False
-        except HTTPException as e:
-            assert str(e) == "404: Alumno not found"
 
     def test_delete_valido(self, session: Session, db: DBAlumnos):
         juan = db.add(session, juan_upsert)
@@ -82,11 +79,8 @@ class TestDBAlumnos:
     def test_delete_no_existente(self, session: Session, db: DBAlumnos):
         db.add(session, juan_upsert)
 
-        try:
+        with pytest.raises(HTTPException, match="404: Alumno not found"):
             db.delete(session, 2)
-            assert False
-        except Exception as e:
-            assert str(e) == "404: Alumno not found"
 
     def test_update_valido(self, session: Session, db: DBAlumnos):
         db.add(session, juan_upsert)
@@ -98,8 +92,5 @@ class TestDBAlumnos:
     def test_update_no_existente(self, session: Session, db: DBAlumnos):
         db.add(session, juan_upsert)
 
-        try:
+        with pytest.raises(HTTPException, match="404: Alumno not found"):
             db.update(session, 2, AlumnoUpsert(nombre="Manuelin", apellido="Equis", edad=22))
-            assert False
-        except Exception as e:
-            assert str(e) == "404: Alumno not found"

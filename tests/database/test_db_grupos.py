@@ -49,8 +49,5 @@ class TestDBGrupos:
         assert db.find(session, 1) == grupo
 
     def test_find_no_existente(self, session: Session, db: DBGrupos):
-        try:
+        with pytest.raises(HTTPException, match="404: Grupo not found"):
             db.find(session, 3)
-            assert False
-        except HTTPException as e:
-            assert str(e) == "404: Grupo not found"
