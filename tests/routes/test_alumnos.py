@@ -1,21 +1,22 @@
 from unittest.mock import MagicMock
-from fastapi import Depends
+
 from fastapi.testclient import TestClient
 
-from src.main import app
-from src.models import Alumno
-from src.database.database import Database
-from src.dependencies import get_database
+from database.database import Database
+from dependencies import get_database
+from main import app
+from models import Alumno
 
 client = TestClient(app)
 
 mock_repo = MagicMock(Database)
 app.dependency_overrides[get_database] = lambda: mock_repo
 
+
 def test_get_alumnos():
     mock_repo.list.return_value = [
         Alumno(padron=1, nombre="Juan", apellido="Perez", edad=20),
-        Alumno(padron=2, nombre="Maria", apellido="Lopez", edad=22)
+        Alumno(padron=2, nombre="Maria", apellido="Lopez", edad=22),
     ]
 
     response = client.get(
@@ -25,6 +26,7 @@ def test_get_alumnos():
     assert response.status_code == 200
     content = response.json()
     assert len(content) == 2
+
 
 def test_get_alumno():
     mock_repo.find.return_value = Alumno(padron=1, nombre="Juan", apellido="Perez", edad=20)
@@ -40,15 +42,13 @@ def test_get_alumno():
     assert content["apellido"] == "Perez"
     assert content["edad"] == 20
 
+
 def test_create_alumno():
     mock_repo.add.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
 
     data = {"nombre": "Test", "apellido": "Apellido", "edad": 19}
-    response = client.post(
-        "/alumnos/",
-        json=data
-    )
-    
+    response = client.post("/alumnos/", json=data)
+
     assert response.status_code == 201
     content = response.json()
     assert content["nombre"] == "Test"
@@ -56,15 +56,13 @@ def test_create_alumno():
     assert content["edad"] == 19
     assert content["padron"] == 1
 
+
 def test_update_alumno():
     mock_repo.update.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
 
     data = {"nombre": "Test", "apellido": "Apellido", "edad": 19}
-    response = client.put(
-        "/alumnos/1",
-        json=data
-    )
-    
+    response = client.put("/alumnos/1", json=data)
+
     assert response.status_code == 200
     content = response.json()
     assert content["nombre"] == "Test"
@@ -72,13 +70,14 @@ def test_update_alumno():
     assert content["edad"] == 19
     assert content["padron"] == 1
 
+
 def test_delete_alumno():
     mock_repo.delete.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
 
     response = client.delete(
         "/alumnos/1",
     )
-    
+
     assert response.status_code == 200
     content = response.json()
     assert content["nombre"] == "Test"

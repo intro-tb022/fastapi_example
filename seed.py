@@ -2,15 +2,15 @@ import csv
 import os
 import random
 
-from fastapi import Path
+from dependencies import get_database
+from models import Alumno
 
-from src.dependencies import get_database
-from src.models import Alumno
+src_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "."))
 
-src_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 def seed():
     cargar_alumnos(os.path.join(src_root, "resources", "alumnos.csv"))
+
 
 def cargar_alumnos(path):
     alumnos = []
@@ -22,7 +22,7 @@ def cargar_alumnos(path):
                     padron=int(linea["Padron"]),
                     nombre=linea["Nombre"],
                     apellido=linea["Apellido"],
-                    edad=random.randint(18, 35)
+                    edad=random.randint(18, 35),
                 )
             )
-    get_database().cargar_alumnos(sorted(alumnos, key= lambda x: x.padron))
+    get_database().cargar_alumnos(sorted(alumnos, key=lambda x: x.padron))

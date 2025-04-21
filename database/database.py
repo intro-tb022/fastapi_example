@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 
 
-from src.models import Alumno, AlumnoUpsert
+from models import Alumno, AlumnoUpsert
 
 
 class Database:
@@ -29,9 +29,7 @@ class Database:
         for alumno in self.alumnos:
             if alumno.padron == padron:
                 return alumno
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Alumno not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Alumno not found")
 
     def delete(self, padron) -> Alumno:
         alumno = self.find(padron)
