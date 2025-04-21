@@ -9,7 +9,7 @@ class IntegranteBase(SQLModel):
 
 class Integrante(IntegranteBase, table=True):
     grupo_id: int = Field(nullable=False, foreign_key="grupo.id", primary_key=True)
-    grupo: "Grupo" = Relationship()
+    grupo: "Grupo" = Relationship(back_populates="integrantes")
 
     alumno_padron: int = Field(nullable=False, foreign_key="alumno.padron", primary_key=True)
     alumno: "Alumno" = Relationship()

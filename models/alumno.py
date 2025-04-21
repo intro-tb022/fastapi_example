@@ -1,3 +1,4 @@
+from pydantic import BaseModel
 from sqlmodel import Field, Relationship, SQLModel
 
 from models.grupo import Grupo
@@ -18,3 +19,12 @@ class Alumno(AlumnoBase, table=True):
 
 class AlumnoUpsert(AlumnoBase):
     pass
+
+
+class FiltrosAlumno(SQLModel):
+    nombre: str | None = None
+    apellido: str | None = None
+    edad: int | None = None
+    padron: int | None = None
+    limit: int = Field(100, gt=0, le=100)
+    offset: int = Field(0, ge=0)

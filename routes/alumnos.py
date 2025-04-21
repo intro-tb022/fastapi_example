@@ -1,8 +1,9 @@
-from fastapi import APIRouter, status
+from typing import Annotated
+from fastapi import APIRouter, Query, status
 
 from dependencies.database import DBAlumnosDep
 from dependencies.sqlmodel import SessionDep
-from models.alumno import AlumnoUpsert
+from models.alumno import AlumnoUpsert, FiltrosAlumno
 from models.error import Error
 from models.public import AlumnoPublic, AlumnoPublicWithRelations
 
@@ -10,8 +11,12 @@ router = APIRouter()
 
 
 @router.get("/")
-def list(session: SessionDep, db: DBAlumnosDep) -> list[AlumnoPublic]:
-    return db.list(session)
+def list(
+    session: SessionDep,
+    db: DBAlumnosDep,
+    filtros: Annotated[FiltrosAlumno, Query()],
+) -> list[AlumnoPublic]:
+    return db.list(session, filtros)
 
 
 @router.get("/{padron}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})

@@ -1,8 +1,9 @@
 from fastapi import HTTPException, status
 from sqlmodel import Session, select
 
-from models.alumno import Alumno, AlumnoUpsert
-from models.integrante import Integrante
+from models.alumno import Alumno, AlumnoUpsert, FiltrosAlumno
+
+default_limit = 10
 
 
 class DBAlumnos:
@@ -10,8 +11,8 @@ class DBAlumnos:
         session.add_all(alumnos)
         session.commit()
 
-    def list(self, session: Session) -> list[Alumno]:
-        query = select(Alumno)
+    def list(self, session: Session, filters) -> list[Alumno]:
+        query = self.__build_list_query(filters)
         alumnos = session.exec(query).all()
         return alumnos
 
@@ -47,3 +48,15 @@ class DBAlumnos:
         if alumno:
             return alumno
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Alumno not found")
+
+    def __build_list_query(self, filters: FiltrosAlumno):
+        query = select(Alumno)
+        if filters:
+            for key, val in filters.model_dump(exclude=["limit", "offset"], exclude_none=True).items():
+                if key in ["nombre", "apellido"]:
+                    query = query.where(Alumno.nombre.like(f"%{val}%"))
+                else:
+                    query = query.where(getattr(Alumno, key) == val)
+
+        query = query.limit(filters.limit).offset(filters.offset)
+        return query
