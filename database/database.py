@@ -16,11 +16,13 @@ class Database:
 
     def add(self, alumno_a_crear: AlumnoUpsert) -> Alumno:
         padron = len(self.alumnos) + 1
+        mail_creado = alumno_a_crear.nombre[0].lower() + alumno_a_crear.apellido.lower() + "@fi.uba.ar"
         alumno = Alumno(
             nombre=alumno_a_crear.nombre,
             apellido=alumno_a_crear.apellido,
             edad=alumno_a_crear.edad,
             padron=padron,
+            mail=mail_creado
         )
         self.alumnos.append(alumno)
         return alumno
@@ -47,3 +49,4 @@ class Database:
         alumno = self.find(padron)
         alumno.notas.append(nota)
         return alumno
+    

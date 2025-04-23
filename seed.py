@@ -23,6 +23,7 @@ def cargar_alumnos(path):
                     nombre=linea["Nombre"],
                     apellido=linea["Apellido"],
                     edad=random.randint(18, 35),
+                    mail=linea["Nombre"][0].lower() + linea["Apellido"].lower() + "@fi.uba.ar"
                 )
             )
     get_database().cargar_alumnos(sorted(alumnos, key=lambda x: x.padron))

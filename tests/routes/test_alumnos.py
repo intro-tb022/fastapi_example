@@ -15,8 +15,8 @@ app.dependency_overrides[get_database] = lambda: mock_repo
 
 def test_get_alumnos():
     mock_repo.list.return_value = [
-        Alumno(padron=1, nombre="Juan", apellido="Perez", edad=20),
-        Alumno(padron=2, nombre="Maria", apellido="Lopez", edad=22),
+        Alumno(padron=1, nombre="Juan", apellido="Perez", edad=20, mail="jperez@fi.uba.ar"),
+        Alumno(padron=2, nombre="Maria", apellido="Lopez", edad=22, mail="mlopez@fi.uba.ar"),
     ]
 
     response = client.get(
@@ -29,7 +29,7 @@ def test_get_alumnos():
 
 
 def test_get_alumno():
-    mock_repo.find.return_value = Alumno(padron=1, nombre="Juan", apellido="Perez", edad=20)
+    mock_repo.find.return_value = Alumno(padron=1, nombre="Juan", apellido="Perez", edad=20, mail="jperez@fi.uba.ar")
 
     response = client.get(
         "/alumnos/1",
@@ -41,10 +41,11 @@ def test_get_alumno():
     assert content["nombre"] == "Juan"
     assert content["apellido"] == "Perez"
     assert content["edad"] == 20
+    assert content["mail"] == "jperez@fi.uba.ar"
 
 
 def test_create_alumno():
-    mock_repo.add.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
+    mock_repo.add.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19, mail="tapellido@fi.uba.ar")
 
     data = {"nombre": "Test", "apellido": "Apellido", "edad": 19}
     response = client.post("/alumnos/", json=data)
@@ -55,10 +56,11 @@ def test_create_alumno():
     assert content["apellido"] == "Apellido"
     assert content["edad"] == 19
     assert content["padron"] == 1
+    assert content["mail"] == "tapellido@fi.uba.ar"
 
 
 def test_update_alumno():
-    mock_repo.update.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
+    mock_repo.update.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19, mail="tapellido@fi.uba.ar")
 
     data = {"nombre": "Test", "apellido": "Apellido", "edad": 19}
     response = client.put("/alumnos/1", json=data)
@@ -69,10 +71,11 @@ def test_update_alumno():
     assert content["apellido"] == "Apellido"
     assert content["edad"] == 19
     assert content["padron"] == 1
+    assert content["mail"] == "tapellido@fi.uba.ar"
 
 
 def test_delete_alumno():
-    mock_repo.delete.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19)
+    mock_repo.delete.return_value = Alumno(padron=1, nombre="Test", apellido="Apellido", edad=19, mail="tapellido@fi.uba.ar")
 
     response = client.delete(
         "/alumnos/1",
@@ -84,3 +87,4 @@ def test_delete_alumno():
     assert content["apellido"] == "Apellido"
     assert content["edad"] == 19
     assert content["padron"] == 1
+    assert content["mail"] == "tapellido@fi.uba.ar"
