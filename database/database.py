@@ -21,6 +21,7 @@ class Database:
             apellido=alumno_a_crear.apellido,
             edad=alumno_a_crear.edad,
             padron=padron,
+            email=alumno_a_crear.nombre[0].lower() + alumno_a_crear.apellido.lower() + "@fi.uba.ar"
         )
         self.alumnos.append(alumno)
         return alumno

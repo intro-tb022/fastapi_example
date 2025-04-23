@@ -3,9 +3,9 @@ import pytest
 from database.database import Database
 from models import Alumno, AlumnoUpsert
 
-juan = Alumno(padron=1, nombre="Juan", apellido="Perez", edad=20)
+juan = Alumno(padron=1, nombre="Juan", apellido="Perez", edad=20, email="jperez@fi.uba.ar")
 juan_upsert = AlumnoUpsert(nombre="Juan", apellido="Perez", edad=20)
-manuelin = Alumno(padron=2, nombre="Manuelin", apellido="Equis", edad=21)
+manuelin = Alumno(padron=2, nombre="Manuelin", apellido="Equis", edad=21, email="mequis@fi.uba.ar")
 manuelin_upsert = AlumnoUpsert(nombre="Manuelin", apellido="Equis", edad=21)
 
 
@@ -24,9 +24,15 @@ class TestDatabase:
         assert db.list() == [juan]
 
     def test_add(self, db):
-        db.add(juan_upsert)
+        db.add(AlumnoUpsert(nombre="Pablo", apellido="Gomez", edad=45))
 
-        assert db.list() == [juan]
+        pablo = db.find(padron=1)
+
+        assert pablo.nombre == "Pablo"
+        assert pablo.apellido == "Gomez"
+        assert pablo.edad == 45
+        assert pablo.padron == 1
+        assert pablo.email == "pgomez@fi.uba.ar"
 
     def test_add_autoincrementa_padron(self, db):
         db.add(juan_upsert)
@@ -71,9 +77,9 @@ class TestDatabase:
         db.add(manuelin_upsert)
 
         assert db.update(2, AlumnoUpsert(nombre="Manuelin", apellido="Equis", edad=22)) == Alumno(
-            padron=2, nombre="Manuelin", apellido="Equis", edad=22
+            padron=2, nombre="Manuelin", apellido="Equis", edad=22, email="mequis@fi.uba.ar"
         )
-        assert db.list() == [juan, Alumno(padron=2, nombre="Manuelin", apellido="Equis", edad=22)]
+        assert db.list() == [juan, Alumno(padron=2, nombre="Manuelin", apellido="Equis", edad=22, email="mequis@fi.uba.ar")]
 
     def test_update_no_existente(self, db):
         db.add(juan)
