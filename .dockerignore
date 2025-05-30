@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+alembic/__pycache__/
+alembic/versions/__pycache__/
+*.db
+# Keep alembic.ini and migration files
+!alembic/
+!alembic/versions/
+!alembic.ini
+.DS_Store
+.vscode/
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
