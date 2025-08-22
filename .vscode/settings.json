@@ -9,5 +9,7 @@
         "plaintext": false,
         "markdown": false,
         "scminput": false
-    }
+    },
+    "python-envs.defaultEnvManager": "ms-python.python:venv",
+    "python-envs.pythonProjects": []
 }

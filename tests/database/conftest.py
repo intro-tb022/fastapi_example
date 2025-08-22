@@ -1,5 +1,5 @@
 import pytest
-from sqlmodel import SQLModel, Session, StaticPool, create_engine
+from sqlmodel import Session, SQLModel, StaticPool, create_engine
 
 
 @pytest.fixture

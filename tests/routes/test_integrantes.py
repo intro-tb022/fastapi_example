@@ -1,7 +1,6 @@
 from unittest.mock import MagicMock
 
 from fastapi.testclient import TestClient
-from sqlmodel import Session
 
 from database.db_integrantes import DBIntegrantes
 from dependencies.database import get_db_integrantes
