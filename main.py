@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -6,14 +8,14 @@ from dependencies.sqlmodel import init_engine
 from routes.routes import api_router
 
 
-def main():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     init_engine()
     init_db()
+    yield
 
 
-main()
-
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 app.include_router(api_router)
 
 app.add_middleware(
