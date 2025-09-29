@@ -4,9 +4,8 @@ import pytest
 from database.alumno import DBAlumnos
 from dependencies.dependencies import get_database_alumnos
 from fastapi.testclient import TestClient
+from main import app
 from models.alumno import Alumno
-
-from basic_with_multiple_models.main import app
 
 
 @pytest.fixture
