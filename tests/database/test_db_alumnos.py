@@ -20,17 +20,17 @@ class TestDBAlumnos:
         juan = db.add(session, juan_upsert)
 
         assert juan.padron == 1
-        assert db.list(session) == [juan]
+        assert db.list(session, None) == [juan]
 
     def test_add_autoincrementa_padron(self, session: Session, db: DBAlumnos):
         db.add(session, juan_upsert)
         db.add(session, manuelin_upsert)
         db.add(session, AlumnoUpsert(nombre="Fake", apellido="Alumno", edad=50))
 
-        assert [a.padron for a in db.list(session)] == [1, 2, 3]
+        assert [a.padron for a in db.list(session, None)] == [1, 2, 3]
 
     def test_list_vacio(self, session: Session, db: DBAlumnos):
-        assert db.list(session) == []
+        assert db.list(session, None) == []
 
     def test_list_no_vacio(self, session: Session, db: DBAlumnos):
         al1 = Alumno(nombre="Nombre1", apellido="Apellido1", edad=100)
@@ -38,7 +38,7 @@ class TestDBAlumnos:
         al1 = db.add(session, al1)
         al2 = db.add(session, al2)
 
-        resultado = db.list(session)
+        resultado = db.list(session, None)
 
         assert len(resultado) == 2
         assert resultado == [al1, al2]
@@ -61,7 +61,7 @@ class TestDBAlumnos:
 
         borrado = db.delete(session, 2)
         assert borrado == manuelin
-        assert db.list(session) == [juan]
+        assert db.list(session, None) == [juan]
 
     def test_delete_no_existente(self, session: Session, db: DBAlumnos):
         db.add(session, juan_upsert)

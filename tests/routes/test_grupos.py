@@ -6,7 +6,7 @@ from database.db_grupos import DBGrupos
 from dependencies.database import get_db_grupos
 from main import app
 from models.alumno import Alumno
-from models.grupo import Grupo, GrupoUpsert
+from models.grupo import Grupo, GrupoUpsert, FiltrosGrupo
 from models.integrante import Integrante, IntegranteCreate
 from tests.mock_utils import mock_session
 
@@ -30,7 +30,7 @@ def test_get_grupos():
     content = response.json()
     assert len(content) == 2
 
-    mock_db.list.assert_called_once_with(mock_session)
+    mock_db.list.assert_called_once_with(mock_session, FiltrosGrupo())
 
 
 def test_get_grupo():

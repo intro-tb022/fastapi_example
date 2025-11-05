@@ -11,7 +11,7 @@ class DBAlumnos:
         session.add_all(alumnos)
         session.commit()
 
-    def list(self, session: Session, filters) -> list[Alumno]:
+    def list(self, session: Session, filters: FiltrosAlumno | None) -> list[Alumno]:
         query = self.__build_list_query(filters)
         alumnos = session.exec(query).all()
         return alumnos
@@ -49,7 +49,7 @@ class DBAlumnos:
             return alumno
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Alumno not found")
 
-    def __build_list_query(self, filters: FiltrosAlumno):
+    def __build_list_query(self, filters: FiltrosAlumno | None):
         query = select(Alumno)
         if filters:
             for key, val in filters.model_dump(exclude=["limit", "offset"], exclude_none=True).items():
@@ -58,5 +58,5 @@ class DBAlumnos:
                 else:
                     query = query.where(getattr(Alumno, key) == val)
 
-        query = query.limit(filters.limit).offset(filters.offset)
+            query = query.limit(filters.limit).offset(filters.offset)
         return query

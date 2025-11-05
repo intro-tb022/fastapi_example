@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from sqlmodel import Session
 
 from database.db_grupos import DBGrupos
-from models.grupo import GrupoUpsert
+from models.grupo import GrupoUpsert, FiltrosGrupo
 
 
 @pytest.fixture
@@ -12,6 +12,7 @@ def db():
 
 
 grupo_a_crear = GrupoUpsert(nombre="Grupo Test")
+otro_grupo_a_crear = GrupoUpsert(nombre="Grupo de prueba")
 
 
 class TestDBGrupos:
@@ -19,16 +20,23 @@ class TestDBGrupos:
         grupo = db.add(session, grupo_a_crear)
 
         assert grupo.id == 1
-        assert db.list(session) == [grupo]
+        assert db.list(session, None) == [grupo]
 
     def test_list_vacio(self, session: Session, db: DBGrupos):
-        assert db.list(session) == []
+        assert db.list(session, None) == []
 
     def test_list_no_vacio(self, session: Session, db: DBGrupos):
         grupo1 = db.add(session, grupo_a_crear)
         grupo2 = db.add(session, grupo_a_crear)
 
-        assert db.list(session) == [grupo1, grupo2]
+        assert db.list(session, None) == [grupo1, grupo2]
+
+    def test_list_con_filtro(self, session: Session, db: DBGrupos):
+        grupo1 = db.add(session, grupo_a_crear)
+        grupo2 = db.add(session, otro_grupo_a_crear)
+
+        assert db.list(session, FiltrosGrupo(nombre="Grup")) == [grupo1, grupo2]
+        assert db.list(session, FiltrosGrupo(nombre="test")) == [grupo1]
 
     def test_find_valido(self, session: Session, db: DBGrupos):
         grupo = db.add(session, grupo_a_crear)
