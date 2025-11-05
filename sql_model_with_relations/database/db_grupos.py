@@ -1,13 +1,15 @@
 from fastapi import HTTPException, status
 from sqlmodel import Session, select
 
-from models.grupo import Grupo, GrupoUpsert
+from models.grupo import Grupo, GrupoUpsert, FiltrosGrupo
 from models.integrante import Integrante, IntegranteCreate
 
 
 class DBGrupos:
-    def list(self, session: Session) -> list[Grupo]:
-        return session.exec(select(Grupo)).all()
+    def list(self, session: Session, filters: FiltrosGrupo | None) -> list[Grupo]:
+        query = self.__build_list_query(filters)
+        alumnos = session.exec(query).all()
+        return alumnos
 
     def find(self, session: Session, grupo_id: int) -> Grupo:
         return self.__get(session, grupo_id)
@@ -51,3 +53,9 @@ class DBGrupos:
         if grupo:
             return grupo
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Grupo not found")
+
+    def __build_list_query(self, filters: FiltrosGrupo | None):
+        query = select(Grupo)
+        if filters and filters.nombre:
+            query = query.where(Grupo.nombre.ilike(f"%{filters.nombre}%"))
+        return query

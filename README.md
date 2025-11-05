@@ -29,15 +29,21 @@ En cada directorio o rama, correr lo siguiente:
 pyenv install 3.13.2
 ```
 
-2. Crear venv usando pipenv 
+2. Crear ambiente virtual usando venv 
 
 ```
-pipenv shell
+python3 -m venv <dir>
 ```
 
-3. Instalar dependencias
+3. Activar el ambiente virtual
 ```
-pipenv install
+source <dir>/bin/activate
+```
+(a partir de acá, todo se hará dentro de ese ambiente virtual usando ese python para este proyecto)
+
+4. Instalar dependencias
+```
+pip install -r requirements.txt
 ```
 
 ## Correr servidor
