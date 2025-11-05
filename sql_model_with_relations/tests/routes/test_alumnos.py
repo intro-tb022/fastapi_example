@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from database.db_alumnos import DBAlumnos
 from dependencies.database import get_db_alumnos
 from main import app
-from models.alumno import Alumno, AlumnoUpsert
+from models.alumno import Alumno, AlumnoUpsert, FiltrosAlumno
 from tests.mock_utils import mock_session
 
 client = TestClient(app)
@@ -28,7 +28,7 @@ def test_get_alumnos():
     content = response.json()
     assert len(content) == 2
 
-    mock_db.list.assert_called_once_with(mock_session)
+    mock_db.list.assert_called_once_with(mock_session, FiltrosAlumno())
 
 
 def test_get_alumno():
