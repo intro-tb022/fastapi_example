@@ -1,7 +1,6 @@
 from fastapi import HTTPException, status
-from sqlmodel import Session, select
-
 from models.alumno import Alumno, AlumnoUpsert, FiltrosAlumno
+from sqlmodel import Session, select
 
 default_limit = 10
 
@@ -53,8 +52,10 @@ class DBAlumnos:
         query = select(Alumno)
         if filters:
             for key, val in filters.model_dump(exclude=["limit", "offset"], exclude_none=True).items():
-                if key in ["nombre", "apellido"]:
+                if key == "nombre":
                     query = query.where(Alumno.nombre.like(f"%{val}%"))
+                if key == "apellido":
+                    query = query.where(Alumno.apellido.like(f"%{val}%"))
                 else:
                     query = query.where(getattr(Alumno, key) == val)
 
