@@ -54,7 +54,7 @@ class DBAlumnos:
             for key, val in filters.model_dump(exclude=["limit", "offset"], exclude_none=True).items():
                 if key == "nombre":
                     query = query.where(Alumno.nombre.like(f"%{val}%"))
-                if key == "apellido":
+                elif key == "apellido":
                     query = query.where(Alumno.apellido.like(f"%{val}%"))
                 else:
                     query = query.where(getattr(Alumno, key) == val)
