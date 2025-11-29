@@ -15,3 +15,6 @@ class Grupo(GrupoBase, table=True):
 
 class GrupoUpsert(GrupoBase):
     integrantes: list[IntegranteCreate] = []
+
+class FiltrosGrupo(SQLModel):
+    nombre: str | None = None

@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Query
+from typing import Annotated
 
 from dependencies.database import DBGruposDep
 from dependencies.sqlmodel import SessionDep
 from models.error import Error
-from models.grupo import GrupoUpsert
+from models.grupo import GrupoUpsert, FiltrosGrupo
 from models.integrante import MAX_SIZE, IntegranteCreate
 from models.public import GrupoPublic, GrupoPublicWithIntegrantes
 
@@ -11,8 +12,9 @@ router = APIRouter()
 
 
 @router.get("/")
-def list(session: SessionDep, db: DBGruposDep) -> list[GrupoPublic]:
-    return db.list(session)
+def list(session: SessionDep, db: DBGruposDep,
+         filtros: Annotated[FiltrosGrupo, Query()],) -> list[GrupoPublic]:
+    return db.list(session, filtros)
 
 
 @router.get("/{grupo_id}", responses={status.HTTP_404_NOT_FOUND: {"model": Error}})
